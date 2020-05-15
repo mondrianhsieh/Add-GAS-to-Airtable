@@ -34,8 +34,10 @@ function getTodaysCritters() {
 
   Logger.log(data.length + ' Critters Found');
 
+  //This loop is added to the data call to enforce default false values for Caught, Donated, and Modeled since
+  //Airtable will not deliver false, empty, or null values in the http request payload.
+  
   const fieldsSchema = { "Caught": false, "Donated": false, "Modeled": false };
-
   data.forEach(function (critter, index) {
     let buildData = { ...fieldsSchema, ...critter['fields'] };
     this[index]['fields'] = buildData;
