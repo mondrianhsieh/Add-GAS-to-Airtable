@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.css">
+
+<head>
+  <base target="_top">
+</head>
+
+<body>
+  <div class="section" id="mainApp">
+
+    <div v-for="critter in todaysCritters" class="container" style="padding-top: 1em;">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">{{critter.fields.Name}}</p>
+        </header>
+        <div class="card-content">
+
+          <p>Months Availabe: {{critter.fields['Month Text']}}</p>
+          <p>Time Active: {{critter.fields['Time Text']}}</p>
+          <p>Location: {{critter.fields.Location}}</p>
+          <p>Selling Price: {{critter.fields.Bells}}</p>
+
+        </div>
+        <footer class="card-footer">
+          <a class="card-footer-item">
+            <div v-if="critter.fields.Caught" class="button is-static">
+              Critter Caught!
+            </div>
+            <div v-else v-on:click="catchCritter(critter.id), critter['fields']['Caught'] = true" class="button">
+              Catch the Critter
+            </div>
+          </a>
+          <a class="card-footer-item">
+            <div v-if="critter.fields.Donated" class="button is-static">
+              Critter Donated!
+            </div>
+            <div v-else v-on:click="donateCritter(critter.id), critter['fields']['Donated'] = true" class="button">
+              Donate the Critter
+            </div>
+          </a>
+          <a class="card-footer-item">
+            <div v-if="critter.fields.Modeled" class="button is-static">
+              Critter Modeled!
+            </div>
+            <div v-else v-on:click="modelCritter(critter.id), critter['fields']['Modeled'] = true" class="button">
+              Model the Critter
+            </div>
+          </a>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+
+</body>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-async-computed@3.7.0"></script>
+<script>
+
+
+  var mainApp = new Vue({
+    el: '#mainApp',
+    data: function () {
+      return {
+      }
+    },
+    computed: {
+    },
+    asyncComputed: {
+      todaysCritters() {
+        return new Promise((resolve, reject) => {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(function (arg) {
+              console.log(arg)
+              alert("Failed to Run Google App Script Function - getTodaysCritters");
+            }).getTodaysCritters();
+        });
+      }
+    },
+    methods: {
+      catchCritter(recordId) {
+        google.script.run.catchCritter(recordId);
+      },
+      donateCritter(recordId) {
+        google.script.run.donateCritter(recordId);
+      },
+      modelCritter(recordId) {
+        google.script.run.modelCritter(recordId);
+      },
+    }
+  });
+
+</script>
+</html>
